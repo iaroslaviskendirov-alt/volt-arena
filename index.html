@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0F12">
+<title>VOLT Arena — компьютерный клуб</title>
+<meta name="description" content="Концепт сайта компьютерного клуба: зоны и цены, железо с FPS в играх, турниры и бронь через WhatsApp.">
+<style>
+  :root {
+    --bg: #0E0F12;
+    --bg-2: #15171C;
+    --card: #1A1D23;
+    --line: #2B2F38;
+    --text: #F3F4F6;
+    --text-2: #9CA3AF;
+    --accent: #FF6B1A;
+    --accent-2: #FFB020;
+    --ok: #34D399;
+    --wa: #25D366;
+    --cut: 14px;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before { transition: none !important; animation: none !important; } }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { border: 0; background: none; cursor: pointer; }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  /* Рубленые углы — фирменная форма */
+  .cut { clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut)); }
+
+  /* Навигация */
+  .nav { position: sticky; top: 0; z-index: 40; background: rgba(14,15,18,.86); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .nav .wrap { display: flex; align-items: center; gap: 16px; min-height: 60px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 20px; letter-spacing: .02em; text-decoration: none; flex: none; }
+  .logo i { width: 28px; height: 28px; display: grid; place-items: center; background: var(--accent); color: #111; font-style: normal; font-size: 16px; }
+  .menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+  .menu::-webkit-scrollbar { display: none; }
+  .menu a { padding: 8px 10px; border-radius: 8px; text-decoration: none; color: var(--text-2); font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+  .menu a:hover { color: var(--text); }
+  .nav-cta { flex: none; padding: 10px 14px; background: var(--accent); color: #111; font-weight: 800; font-size: 14.5px; text-decoration: none; }
+  @media (max-width: 640px) { .nav-cta { display: none; } }
+
+  /* Первый экран */
+  .hero { position: relative; overflow: hidden; padding: 56px 0 40px; }
+  .hero::before { content: ""; position: absolute; inset: -20% -10% auto auto; width: 70%; height: 120%;
+    background: radial-gradient(closest-side, rgba(255,107,26,.32), transparent 70%); pointer-events: none; }
+  .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background: repeating-linear-gradient(115deg, transparent 0 22px, rgba(255,255,255,.025) 22px 23px); }
+  .hero .wrap { position: relative; z-index: 1; display: grid; gap: 28px; }
+  @media (min-width: 900px) { .hero .wrap { grid-template-columns: 1.15fr .85fr; align-items: center; } }
+  .live { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--text-2);
+    border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; }
+  .live b { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(52,211,153,.6); animation: pulse 2s infinite; }
+  @keyframes pulse { to { box-shadow: 0 0 0 10px rgba(52,211,153,0); } }
+  h1 { font-size: clamp(38px, 8vw, 72px); line-height: 1.02; margin: 18px 0 12px; letter-spacing: -.03em; font-weight: 900; }
+  .typed { color: var(--accent); display: inline-block; min-width: 1ch; }
+  .typed::after { content: "▍"; color: var(--accent-2); animation: blink 1s steps(1) infinite; margin-left: 2px; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hero p.lead { color: var(--text-2); font-size: 18px; max-width: 540px; margin: 0; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px; font-weight: 800; text-decoration: none; }
+  .btn-accent { background: var(--accent); color: #111; }
+  .btn-line { border: 1px solid var(--line); background: var(--bg-2); }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { background: var(--card); border: 1px solid var(--line); padding: 18px 16px; }
+  .stat b { display: block; font-size: 34px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat b em { font-style: normal; color: var(--accent); }
+  .stat > span { color: var(--text-2); font-size: 14px; }
+
+  section { padding: 56px 0 8px; scroll-margin-top: 60px; }
+  .eyebrow { color: var(--accent); font-weight: 800; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+  h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; margin: 8px 0 10px; letter-spacing: -.02em; }
+  .sub { color: var(--text-2); margin: 0 0 22px; max-width: 620px; }
+
+  /* Зоны и цены */
+  .filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 16px; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter { flex: none; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); background: var(--bg-2); font-weight: 700; font-size: 14.5px; color: var(--text-2); }
+  .filter.on { background: var(--text); color: #111; border-color: var(--text); }
+  .zones { display: grid; gap: 14px; }
+  @media (min-width: 720px) { .zones { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .zones { grid-template-columns: repeat(3, 1fr); } }
+  .zone { background: var(--card); border: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; position: relative; }
+  .zone.hot { border-color: rgba(255,107,26,.6); }
+  .zone .flag { position: absolute; top: 14px; right: 14px; font-size: 11.5px; font-weight: 900; letter-spacing: .08em; background: var(--accent); color: #111; padding: 3px 8px; }
+  .zone h3 { margin: 0; font-size: 22px; }
+  .zone .meta { color: var(--text-2); font-size: 14px; margin: 2px 0 14px; }
+  .rates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rate { background: var(--bg-2); border: 1px solid var(--line); padding: 10px; }
+  .rate[hidden] { display: none; }
+  .rate small { display: flex; justify-content: space-between; color: var(--text-2); font-size: 12.5px; }
+  .rate small em { font-style: normal; color: var(--ok); font-weight: 800; }
+  .rate b { display: block; font-size: 18px; margin-top: 2px; }
+  .rate i { font-style: normal; color: var(--text-2); font-size: 12.5px; }
+  .calc { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); background: var(--bg-2); }
+  .stepper button { width: 40px; height: 40px; font-size: 20px; font-weight: 800; }
+  .stepper span { min-width: 48px; text-align: center; font-weight: 800; font-size: 14.5px; }
+  .calc .sum { text-align: right; }
+  .calc .sum b { display: block; font-size: 20px; }
+  .calc .sum small { color: var(--ok); font-weight: 700; font-size: 12.5px; }
+  .zone .book { margin-top: 12px; min-height: 46px; background: var(--bg-2); border: 1px solid var(--line); font-weight: 800; }
+  .zone.hot .book { background: var(--accent); color: #111; border-color: var(--accent); }
+
+  /* Железо */
+  .tiers { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 14px; }
+  .tiers::-webkit-scrollbar { display: none; }
+  .hw { background: var(--card); border: 1px solid var(--line); padding: 20px; display: grid; gap: 20px; }
+  @media (min-width: 820px) { .hw { grid-template-columns: 1fr 1fr; } }
+  .hw h3 { margin: 0 0 12px; font-size: 24px; }
+  .spec { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .spec span { color: var(--text-2); }
+  .spec b { text-align: right; }
+  .fps h4 { margin: 0 0 4px; font-size: 15px; }
+  .fps p { margin: 0 0 14px; color: var(--text-2); font-size: 13px; }
+  .bar { margin-bottom: 12px; }
+  .bar div { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .bar div span:last-child { color: var(--accent-2); font-variant-numeric: tabular-nums; }
+  .track { height: 8px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; }
+  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .6s ease; }
+
+  /* Турнир */
+  .tour { background: linear-gradient(135deg, rgba(255,107,26,.18), transparent 60%), var(--card); border: 1px solid var(--line); padding: 22px; display: grid; gap: 18px; }
+  @media (min-width: 820px) { .tour { grid-template-columns: 1.2fr 1fr; align-items: center; } }
+  .tour h3 { margin: 4px 0 6px; font-size: 28px; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .facts div { background: var(--bg-2); border: 1px solid var(--line); padding: 10px 12px; }
+  .facts small { display: block; color: var(--text-2); font-size: 12.5px; }
+  .facts b { font-size: 16px; }
+  .countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
+  .countdown div { background: var(--bg-2); border: 1px solid var(--line); padding: 12px 4px; }
+  .countdown b { display: block; font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .countdown small { color: var(--text-2); font-size: 12px; }
+  .slots { margin: 14px 0 12px; }
+  .slots div:first-child { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+
+  /* Атмосфера */
+  .gallery { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
+  .gallery::-webkit-scrollbar { display: none; }
+  @media (min-width: 820px) { .gallery { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); grid-auto-columns: auto; } }
+  .tile { scroll-snap-align: start; aspect-ratio: 4 / 3; position: relative; overflow: hidden; border: 1px solid var(--line); display: flex; align-items: flex-end; padding: 14px; }
+  .tile::before { content: ""; position: absolute; inset: 0; background: var(--bgimg); }
+  .tile span { position: relative; font-weight: 800; background: rgba(0,0,0,.55); padding: 6px 10px; }
+  .tile i { position: absolute; right: 14px; top: 10px; font-size: 44px; font-style: normal; opacity: .9; }
+
+  /* Бронь */
+  .booking { background: var(--card); border: 1px solid var(--line); padding: 20px; display: grid; gap: 14px; }
+  @media (min-width: 820px) { .booking { grid-template-columns: 1fr 1fr; column-gap: 18px; } .booking .full { grid-column: 1 / -1; } }
+  .field span { display: block; font-size: 13px; font-weight: 800; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .input { width: 100%; min-height: 48px; background: var(--bg-2); border: 1px solid var(--line); padding: 10px 12px; font-size: 16px; color-scheme: dark; }
+  .input:focus { outline: none; border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 14px; }
+  .total span { color: var(--text-2); font-weight: 700; }
+  .total b { font-size: 28px; }
+  .total small { display: block; text-align: right; color: var(--ok); font-weight: 700; font-size: 13px; }
+  .send { min-height: 56px; background: var(--wa); color: #fff; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+  .send[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .hint { text-align: center; font-size: 13px; color: var(--text-2); margin: 0; }
+
+  /* FAQ */
+  details { background: var(--card); border: 1px solid var(--line); padding: 0 16px; margin-bottom: 8px; }
+  summary { cursor: pointer; list-style: none; padding: 16px 0; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 0 0 16px; color: var(--text-2); }
+
+  footer { margin-top: 56px; border-top: 1px solid var(--line); padding: 28px 0 calc(110px + var(--safe-b)); color: var(--text-2); font-size: 14.5px; }
+  footer .cols { display: grid; gap: 16px; }
+  @media (min-width: 720px) { footer .cols { grid-template-columns: repeat(3, 1fr); } }
+  footer b { color: var(--text); display: block; margin-bottom: 4px; }
+  footer a { text-decoration: none; color: var(--accent-2); font-weight: 700; }
+  .concept { margin-top: 20px; font-size: 13px; }
+
+  /* Липкая кнопка (мобильные) */
+  .sticky { position: fixed; left: 12px; right: 12px; bottom: calc(12px + var(--safe-b)); z-index: 50; min-height: 56px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px; background: var(--accent); color: #111; font-weight: 900; text-decoration: none; transition: transform .25s, opacity .25s; }
+  .sticky.hide { transform: translateY(150%); opacity: 0; }
+  @media (min-width: 900px) { .sticky { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><i>⚡</i>VOLT</a>
+    <div class="menu">
+      <a href="#prices">Цены</a><a href="#hardware">Железо</a><a href="#tournament">Турнир</a><a href="#gallery">Клуб</a><a href="#faq">Вопросы</a>
+    </div>
+    <a class="nav-cta cut" href="#booking">Забронировать</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="live"><b></b>Открыто 24/7 · бронь за минуту</span>
+      <h1>VOLT Arena<br>для <span class="typed" id="typed"></span></h1>
+      <p class="lead" id="lead"></p>
+      <div class="cta-row">
+        <a class="btn btn-accent cut" href="#booking">Забронировать место</a>
+        <a class="btn btn-line cut" href="#prices">Цены и зоны</a>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="prices">
+    <div class="eyebrow">Зоны и цены</div>
+    <h2>Чем дольше играешь — тем дешевле час</h2>
+    <p class="sub">Пакеты на 3 и 5 часов выгоднее почасовой оплаты, а ночь — самый дешёвый способ поиграть долго.</p>
+    <div class="filters" id="filters">
+      <button class="filter on" type="button" data-f="all">Все тарифы</button>
+      <button class="filter" type="button" data-f="hour">Часы</button>
+      <button class="filter" type="button" data-f="pack">Пакеты</button>
+      <button class="filter" type="button" data-f="night">Ночь</button>
+    </div>
+    <div class="zones" id="zones"></div>
+  </section>
+
+  <section id="hardware">
+    <div class="eyebrow">Железо</div>
+    <h2>Сколько FPS ты получишь</h2>
+    <p class="sub">Выбери зону и посмотри не только характеристики, но и то, как на них идут популярные игры.</p>
+    <div class="tiers" id="tiers"></div>
+    <div class="hw" id="hw"></div>
+  </section>
+
+  <section id="tournament">
+    <div class="eyebrow">Турнир</div>
+    <h2>Собирай пятёрку</h2>
+    <div class="tour cut" id="tour"></div>
+  </section>
+
+  <section id="gallery">
+    <div class="eyebrow">Клуб</div>
+    <h2>Атмосфера</h2>
+    <p class="sub">Свет, посадки и зоны клуба.</p>
+    <div class="gallery" id="galleryList"></div>
+  </section>
+
+  <section id="booking-section">
+    <div class="eyebrow">Бронь</div>
+    <h2>Забронируй место</h2>
+    <p class="sub">Заполни форму, и заявка с суммой откроется в WhatsApp. Подтвердим за пару минут.</p>
+    <form class="booking cut" id="booking" onsubmit="return false">
+      <label class="field"><span>Зона</span><select class="input" id="bZone"></select></label>
+      <label class="field"><span>Тариф</span><select class="input" id="bTariff"></select></label>
+      <div class="row2">
+        <label class="field"><span>Дата</span><input class="input" type="date" id="bDate"></label>
+        <label class="field"><span>Время</span><input class="input" type="time" id="bTime" step="1800"></label>
+      </div>
+      <div class="row2">
+        <label class="field"><span>Часов</span><input class="input" type="number" id="bHours" min="1" max="12" value="3"></label>
+        <label class="field"><span>Мест</span><input class="input" type="number" id="bSeats" min="1" max="20" value="1"></label>
+      </div>
+      <label class="field full"><span>Имя</span><input class="input" id="bName" autocomplete="given-name" placeholder="Как к тебе обращаться"></label>
+      <div class="total full"><span>Итого</span><div><b id="bTotal">0 ₸</b><small id="bSave"></small></div></div>
+      <a class="send full cut" id="bSend" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .3-3.4-.7-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.2.2-.3.4-.1.7.2.4.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.7 1.6.3.2.5.1.7-.1l1-1.2c.2-.3.5-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.2 1.5Z"/></svg>
+        Отправить заявку в WhatsApp
+      </a>
+      <p class="hint full" id="bHint"></p>
+    </form>
+  </section>
+
+  <section id="faq">
+    <div class="eyebrow">Вопросы</div>
+    <h2>Частые вопросы</h2>
+    <div id="faqList"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><b>VOLT Arena</b>Компьютерный клуб · открыто 24/7</div>
+      <div><b>Бронь ПК</b><a id="phonePc"></a></div>
+      <div><b>Бронь PS5</b><a id="phonePs"></a></div>
+    </div>
+    <p class="concept">Концепт сайта компьютерного клуба. Клуб, цены и контакты вымышленные.</p>
+  </div>
+</footer>
+
+<a class="sticky cut" id="sticky" href="#booking"><span>⚡ Забронировать</span><span id="stickyFrom"></span></a>
+
+<script>
+// ============================================================
+//  НАСТРОЙКИ САЙТА — всё, что можно менять, находится здесь
+// ============================================================
+const CONFIG = {
+  name: 'VOLT Arena',
+  lead: 'Мощные ПК, мониторы до 540 Гц, PS5 и турниры каждый месяц. Приходи один или собирай команду.',
+  typed: ['катки с друзьями', 'турниров', 'ночных сессий', 'PS5 и FIFA'],
+  stats: [
+    { value: 60, label: 'игровых ПК' },
+    { value: 6, label: 'PS5 с телевизорами 4K' },
+    { value: 540, suffix: ' Гц', label: 'максимальная частота' },
+    { value: 24, suffix: '/7', label: 'без выходных' },
+  ],
+
+  // Номера WhatsApp (только цифры, с 7 в начале): отдельно для ПК и для PS5.
+  whatsappPc: '77000000000',
+  whatsappPs: '77000000000',
+
+  // Зоны. hour — цена за час; packs — пакеты (часы и скидка); night — ночь 22:00–08:00.
+  zones: [
+    { id: 'std', name: 'Standard', seats: '20 ПК', note: 'Стабильная игра в любые онлайн-хиты', hour: 600, night: 2500, kind: 'pc' },
+    { id: 'prm', name: 'Premium', seats: '20 ПК', note: 'Свежее железо и 280 Гц', hour: 900, night: 3500, kind: 'pc' },
+    { id: 'vip', name: 'VIP', seats: '10 ПК', note: 'Отдельный зал, кресла DXRacer', hour: 1200, night: 4500, kind: 'pc', hot: 'ХИТ' },
+    { id: 'pro', name: 'Pro', seats: '10 ПК', note: 'Турнирные ПК, 540 Гц', hour: 1600, night: 6000, kind: 'pc' },
+    { id: 'ps5', name: 'PS5 Lounge', seats: '6 консолей', note: 'Диваны, 65″ 4K, до 4 игроков', hour: 1500, night: 6000, kind: 'ps', priceNote: 'за консоль' },
+  ],
+  packs: [ { hours: 3, discount: 10 }, { hours: 5, discount: 15 } ],
+
+  // Железо по зонам и примерный FPS на соревновательных настройках в 1080p.
+  hardware: {
+    std: { cpu: 'Intel Core i5-12400F', gpu: 'RTX 4060 8GB', ram: '16GB DDR4', monitor: '240 Гц', gear: 'HyperX Pulsefire · HyperX Cloud II',
+      fps: { 'CS2': 280, 'Valorant': 350, 'Dota 2': 190, 'Warzone': 110 } },
+    prm: { cpu: 'Intel Core i5-13400F', gpu: 'RTX 5060 8GB', ram: '16GB DDR5', monitor: '280 Гц', gear: 'Logitech G305 · HyperX Cloud III',
+      fps: { 'CS2': 350, 'Valorant': 450, 'Dota 2': 230, 'Warzone': 140 } },
+    vip: { cpu: 'Intel Core i7-14700F', gpu: 'RTX 4070 Super 12GB', ram: '32GB DDR5', monitor: '360 Гц', gear: 'Logitech G Pro X Superlight · G Pro X',
+      fps: { 'CS2': 450, 'Valorant': 600, 'Dota 2': 290, 'Warzone': 180 } },
+    pro: { cpu: 'AMD Ryzen 7 9800X3D', gpu: 'RTX 5070 Ti 16GB', ram: '32GB DDR5 6000', monitor: '540 Гц', gear: 'Logitech Superlight 2 · Wooting 60HE',
+      fps: { 'CS2': 600, 'Valorant': 750, 'Dota 2': 360, 'Warzone': 220 } },
+    ps5: { cpu: 'PlayStation 5 Pro', gpu: '4K · 120 Гц', ram: '2 геймпада DualSense', monitor: 'Телевизор 65″', gear: 'FIFA, Mortal Kombat, GTA V, UFC',
+      fps: { 'FIFA': 120, 'Mortal Kombat 1': 60, 'GTA V': 60, 'UFC 5': 60 } },
+  },
+
+  tournament: {
+    title: 'VOLT Cup · CS2',
+    format: '5×5 · Single Elimination',
+    prize: '500 000 ₸',
+    fee: '10 000 ₸ с команды',
+    daysFromNow: 12,      // в демо дата турнира считается от сегодняшнего дня
+    startTime: '12:00',
+    slots: 16, taken: 11,
+  },
+
+  gallery: [
+    { title: 'Pro-зона', icon: '🖥️', bg: 'linear-gradient(135deg,#3a1a0a,#ff6b1a 140%)' },
+    { title: 'PS5 Lounge', icon: '🎮', bg: 'linear-gradient(135deg,#0d1b2a,#3b82f6 160%)' },
+    { title: 'Турнирная сцена', icon: '🏆', bg: 'linear-gradient(135deg,#2a1a00,#ffb020 150%)' },
+    { title: 'VIP-зал', icon: '🪑', bg: 'linear-gradient(135deg,#1a0f2e,#a855f7 160%)' },
+    { title: 'Бар и снеки', icon: '🥤', bg: 'linear-gradient(135deg,#0a2a1f,#34d399 160%)' },
+    { title: 'Ночные сессии', icon: '🌙', bg: 'linear-gradient(135deg,#0a0f2a,#6366f1 160%)' },
+  ],
+
+  faq: [
+    ['Нужна ли бронь?', 'Вечером и в выходные — лучше да, особенно если вас несколько. Днём обычно есть свободные места.'],
+    ['Можно ли со своей мышкой и клавиатурой?', 'Конечно. Подключим любую свою периферию, драйверы уже стоят.'],
+    ['Есть ли ограничение по возрасту?', 'Днём — с любого возраста, ночные пакеты — с 18 лет или с письменного разрешения родителей.'],
+    ['Как работает ночной пакет?', 'Платите фиксированную сумму и играете с 22:00 до 08:00. Это самый выгодный тариф для долгой игры.'],
+    ['Можно ли перекусить?', 'У нас есть бар: напитки, энергетики и снеки. Еду можно заказать с доставкой прямо в клуб.'],
+  ],
+};
+
+// ============================================================
+//  Дальше код сайта — менять не нужно
+// ============================================================
+const $ = (s) => document.querySelector(s);
+const money = (n) => Math.round(n).toLocaleString('ru-RU') + ' ₸';
+const zoneById = Object.fromEntries(CONFIG.zones.map((z) => [z.id, z]));
+
+// Цена N часов: к часам применяется лучшая скидка пакета, который они покрывают.
+function priceFor(zone, hours) {
+  const pack = CONFIG.packs.filter((p) => hours >= p.hours).pop();
+  const discount = pack ? pack.discount : 0;
+  const full = zone.hour * hours;
+  return { total: full * (1 - discount / 100), full, discount };
+}
+const packPrice = (zone, p) => zone.hour * p.hours * (1 - p.discount / 100);
+const hoursWord = (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'час' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'часа' : 'часов'}`;
+
+// ---- Первый экран ----
+$('#lead').textContent = CONFIG.lead;
+$('#stats').innerHTML = CONFIG.stats.map((s) => `
+  <div class="stat cut"><b><span data-count="${s.value}">0</span><em>${s.suffix || ''}</em></b><span>${s.label}</span></div>`).join('');
+$('#stickyFrom').textContent = `от ${money(Math.min(...CONFIG.zones.map((z) => z.hour)))}/ч`;
+
+// Печатающийся текст
+(function typeLoop() {
+  const el = $('#typed');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { el.textContent = CONFIG.typed[0]; return; }
+  let w = 0, i = 0, del = false;
+  (function tick() {
+    const word = CONFIG.typed[w];
+    i += del ? -1 : 1;
+    el.textContent = word.slice(0, i);
+    let wait = del ? 40 : 85;
+    if (!del && i === word.length) { del = true; wait = 1600; }
+    else if (del && i === 0) { del = false; w = (w + 1) % CONFIG.typed.length; wait = 300; }
+    setTimeout(tick, wait);
+  })();
+})();
+
+// Счётчики цифр, когда блок появляется на экране
+const counted = new IntersectionObserver((entries) => entries.forEach((e) => {
+  if (!e.isIntersecting) return;
+  counted.unobserve(e.target);
+  const to = +e.target.dataset.count, t0 = performance.now();
+  (function step(t) {
+    const k = Math.min(1, (t - t0) / 900);
+    e.target.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}), { threshold: .4 });
+document.querySelectorAll('[data-count]').forEach((el) => counted.observe(el));
+
+// ---- Зоны и цены ----
+const calcHours = Object.fromEntries(CONFIG.zones.map((z) => [z.id, 3]));
+function renderZones() {
+  $('#zones').innerHTML = CONFIG.zones.map((z) => {
+    const per = z.priceNote ? ` ${z.priceNote}` : '';
+    const packs = CONFIG.packs.map((p) => {
+      const price = packPrice(z, p);
+      return `<div class="rate" data-kind="pack"><small>${hoursWord(p.hours)}<em>−${p.discount}%</em></small><b>${money(price)}</b><i>${money(price / p.hours)}/час</i></div>`;
+    }).join('');
+    const h = calcHours[z.id], c = priceFor(z, h);
+    return `
+    <article class="zone cut ${z.hot ? 'hot' : ''}">
+      ${z.hot ? `<span class="flag">${z.hot}</span>` : ''}
+      <h3>${z.name}</h3>
+      <div class="meta">${z.seats} · ${z.note}</div>
+      <div class="rates">
+        <div class="rate" data-kind="hour"><small>1 час${per}</small><b>${money(z.hour)}</b><i>почасово</i></div>
+        ${packs}
+        <div class="rate" data-kind="night"><small>Ночь 22–08</small><b>${money(z.night)}</b><i>${money(z.night / 10)}/час</i></div>
+      </div>
+      <div class="calc">
+        <div class="stepper"><button type="button" data-dec="${z.id}" aria-label="Меньше часов">−</button><span>${h} ч</span><button type="button" data-inc="${z.id}" aria-label="Больше часов">+</button></div>
+        <div class="sum"><b>${money(c.total)}</b><small>${c.discount ? `экономия ${money(c.full - c.total)}` : '&nbsp;'}</small></div>
+      </div>
+      <button class="book cut" type="button" data-book="${z.id}">Забронировать ${z.name}</button>
+    </article>`;
+  }).join('');
+  applyFilter();
+}
+let filter = 'all';
+function applyFilter() {
+  document.querySelectorAll('.rate').forEach((r) => { r.hidden = filter !== 'all' && r.dataset.kind !== filter; });
+  document.querySelectorAll('.filter').forEach((b) => b.classList.toggle('on', b.dataset.f === filter));
+}
+
+// ---- Железо ----
+let tier = 'pro';
+function renderHardware() {
+  $('#tiers').innerHTML = CONFIG.zones.map((z) => `<button class="filter ${z.id === tier ? 'on' : ''}" type="button" data-tier="${z.id}">${z.name}</button>`).join('');
+  const hw = CONFIG.hardware[tier], z = zoneById[tier];
+  const isPs = z.kind === 'ps';
+  // Шкала общая для всех ПК-зон (чтобы было видно разницу), а у консоли своя — до 120 FPS.
+  const max = isPs ? 120 : Math.max(...CONFIG.zones.filter((x) => x.kind === 'pc').flatMap((x) => Object.values(CONFIG.hardware[x.id].fps)));
+  $('#hw').innerHTML = `
+    <div>
+      <h3>${z.name}</h3>
+      <div class="spec"><span>${isPs ? 'Консоль' : 'Процессор'}</span><b>${hw.cpu}</b></div>
+      <div class="spec"><span>${isPs ? 'Картинка' : 'Видеокарта'}</span><b>${hw.gpu}</b></div>
+      <div class="spec"><span>${isPs ? 'В комплекте' : 'Память'}</span><b>${hw.ram}</b></div>
+      <div class="spec"><span>${isPs ? 'Экран' : 'Монитор'}</span><b>${hw.monitor}</b></div>
+      <div class="spec"><span>${isPs ? 'Игры' : 'Периферия'}</span><b>${hw.gear}</b></div>
+    </div>
+    <div class="fps">
+      <h4>FPS в играх</h4>
+      <p>${isPs ? 'Кадров в секунду в режиме производительности' : 'Примерно, на соревновательных настройках в 1080p'}</p>
+      ${Object.entries(hw.fps).map(([game, fps]) => `
+        <div class="bar"><div><span>${game}</span><span>${fps}+ FPS</span></div>
+        <div class="track"><div class="fill" data-w="${Math.round(fps / max * 100)}"></div></div></div>`).join('')}
+    </div>`;
+  // setTimeout, а не requestAnimationFrame: в фоновой вкладке rAF не срабатывает и полоски остались бы пустыми.
+  setTimeout(() => document.querySelectorAll('#hw .fill').forEach((f) => { f.style.width = f.dataset.w + '%'; }), 30);
+}
+
+// ---- Турнир ----
+const T = CONFIG.tournament;
+const tourDate = (() => { const d = new Date(); d.setDate(d.getDate() + T.daysFromNow); const [h, m] = T.startTime.split(':'); d.setHours(+h, +m, 0, 0); return d; })();
+const tourDateText = tourDate.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'long' }) + ', ' + T.startTime;
+$('#tour').innerHTML = `
+  <div>
+    <span class="live"><b></b>Открыта регистрация</span>
+    <h3>${T.title}</h3>
+    <div class="facts">
+      <div><small>Старт</small><b>${tourDateText}</b></div>
+      <div><small>Формат</small><b>${T.format}</b></div>
+      <div><small>Призовой фонд</small><b>${T.prize}</b></div>
+      <div><small>Взнос</small><b>${T.fee}</b></div>
+    </div>
+  </div>
+  <div>
+    <div class="countdown" id="countdown"></div>
+    <div class="slots"><div><span>Команды</span><span>${T.taken}/${T.slots}</span></div>
+      <div class="track"><div class="fill" style="width:${T.taken / T.slots * 100}%"></div></div></div>
+    <a class="btn btn-accent cut" style="width:100%" id="tourBtn" target="_blank" rel="noopener">Зарегистрировать команду</a>
+  </div>`;
+$('#tourBtn').href = `https://wa.me/${CONFIG.whatsappPc}?text=${encodeURIComponent(`Здравствуйте! Хотим зарегистрировать команду на ${T.title} (${tourDateText}).\nНазвание команды: \nКапитан: `)}`;
+function tickCountdown() {
+  let s = Math.max(0, Math.floor((tourDate - Date.now()) / 1000));
+  const parts = [[Math.floor(s / 86400), 'дней'], [Math.floor(s % 86400 / 3600), 'часов'], [Math.floor(s % 3600 / 60), 'минут'], [s % 60, 'секунд']];
+  $('#countdown').innerHTML = parts.map(([v, l]) => `<div><b>${String(v).padStart(2, '0')}</b><small>${l}</small></div>`).join('');
+}
+tickCountdown();
+setInterval(tickCountdown, 1000);
+
+// ---- Галерея и FAQ ----
+$('#galleryList').innerHTML = CONFIG.gallery.map((g) => `<div class="tile cut" style="--bgimg:${g.bg}"><i aria-hidden="true">${g.icon}</i><span>${g.title}</span></div>`).join('');
+$('#faqList').innerHTML = CONFIG.faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('');
+
+// ---- Бронь ----
+const pad = (n) => String(n).padStart(2, '0');
+$('#bZone').innerHTML = CONFIG.zones.map((z) => `<option value="${z.id}">${z.name} — ${money(z.hour)}/ч${z.priceNote ? ' ' + z.priceNote : ''}</option>`).join('');
+$('#bTariff').innerHTML = '<option value="hours">По часам (пакеты со скидкой от 3 ч)</option><option value="night">Ночь 22:00–08:00</option>';
+(() => {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() < 30 ? 30 : 60, 0, 0);
+  $('#bDate').value = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  $('#bDate').min = $('#bDate').value;
+  $('#bTime').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+})();
+$('#bZone').value = 'vip';
+
+function clampInt(el, min, max) { const v = Math.min(max, Math.max(min, parseInt(el.value, 10) || min)); return v; }
+
+function bookingState() {
+  const zone = zoneById[$('#bZone').value];
+  const night = $('#bTariff').value === 'night';
+  const hours = clampInt($('#bHours'), 1, 12);
+  const seats = clampInt($('#bSeats'), 1, 20);
+  const p = night ? { total: zone.night, full: zone.night, discount: 0 } : priceFor(zone, hours);
+  return { zone, night, hours, seats, total: p.total * seats, save: (p.full - p.total) * seats };
+}
+
+function dateLabel(value) {
+  if (!value) return '';
+  const [y, m, d] = value.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'long' });
+}
+
+function renderBooking() {
+  const s = bookingState();
+  $('#bHours').disabled = s.night;
+  if (s.night) $('#bTime').value = '22:00';
+  $('#bTotal').textContent = money(s.total);
+  $('#bSave').textContent = s.save > 0 ? `экономия ${money(s.save)} по пакету` : '';
+  const missing = !$('#bDate').value ? 'Выберите дату' : !$('#bTime').value ? 'Выберите время' : '';
+  const name = $('#bName').value.trim();
+  const text = [
+    `Здравствуйте! Хочу забронировать в ${CONFIG.name}:`,
+    '',
+    `Зона: ${s.zone.name}`,
+    s.night ? 'Тариф: ночь 22:00–08:00' : `Время: ${s.hours} ч`,
+    `Дата: ${dateLabel($('#bDate').value)}${s.night ? '' : `, с ${$('#bTime').value}`}`,
+    `${s.zone.kind === 'ps' ? 'Консолей' : 'Мест'}: ${s.seats}`,
+    `Итого: ${money(s.total)}`,
+    name ? `Имя: ${name}` : null,
+  ].filter((x) => x !== null).join('\n');
+  const number = s.zone.kind === 'ps' ? CONFIG.whatsappPs : CONFIG.whatsappPc;
+  $('#bSend').href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+  $('#bSend').setAttribute('aria-disabled', String(!!missing));
+  $('#bHint').textContent = missing || `Заявка уйдёт на номер ${s.zone.kind === 'ps' ? 'PS5' : 'ПК'}-зоны`;
+}
+['#bZone', '#bTariff', '#bDate', '#bTime', '#bHours', '#bSeats', '#bName'].forEach((sel) => {
+  $(sel).addEventListener('input', renderBooking);
+  $(sel).addEventListener('change', renderBooking);
+});
+
+// ---- Клики ----
+document.addEventListener('click', (e) => {
+  const f = e.target.closest('[data-f]');
+  if (f) { filter = f.dataset.f; applyFilter(); }
+  const inc = e.target.closest('[data-inc]'), dec = e.target.closest('[data-dec]');
+  if (inc) { calcHours[inc.dataset.inc] = Math.min(12, calcHours[inc.dataset.inc] + 1); renderZones(); }
+  if (dec) { calcHours[dec.dataset.dec] = Math.max(1, calcHours[dec.dataset.dec] - 1); renderZones(); }
+  const book = e.target.closest('[data-book]');
+  if (book) {
+    $('#bZone').value = book.dataset.book;
+    $('#bHours').value = calcHours[book.dataset.book];
+    $('#bTariff').value = 'hours';
+    renderBooking();
+    $('#booking').scrollIntoView({ block: 'start' });
+  }
+  const t = e.target.closest('[data-tier]');
+  if (t) { tier = t.dataset.tier; renderHardware(); }
+});
+
+// Контакты в подвале
+const fmtPhone = (n) => `+${n[0]} ${n.slice(1, 4)} ${n.slice(4, 7)} ${n.slice(7, 9)} ${n.slice(9)}`;
+$('#phonePc').textContent = fmtPhone(CONFIG.whatsappPc); $('#phonePc').href = `https://wa.me/${CONFIG.whatsappPc}`;
+$('#phonePs').textContent = fmtPhone(CONFIG.whatsappPs); $('#phonePs').href = `https://wa.me/${CONFIG.whatsappPs}`;
+
+// Липкая кнопка прячется у формы брони
+new IntersectionObserver(([e]) => $('#sticky').classList.toggle('hide', e.isIntersecting), { threshold: .1 }).observe($('#booking'));
+
+renderZones();
+renderHardware();
+renderBooking();
+</script>
+</body>
+</html>
